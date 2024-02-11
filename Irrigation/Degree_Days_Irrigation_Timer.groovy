@@ -18,7 +18,7 @@ definition(
 	author: "Andrew Nunes",
 	description: "Irrigation scheduler based on cumulative degree days since last watering or precipication",
 	category: "Environmental",
-        importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/Irrigation/Degree_Days_Irrigation_Timer.groovy",
+        importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/master/Irrigation/Degree_Days_Irrigation_Timer.groovy",
 	iconUrl: "",
 	iconX2Url: ""
 )
