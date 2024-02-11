@@ -1,0 +1,16 @@
+{
+  "author": "pentalingual",
+  "gitHubUrl": "https://github.com/pentalingual/Hubitat/",
+  "packages": [
+    {
+      "id": "b8331bb0-8fc8-4a17-a5ef-e3e79cf4e157",
+      "name": "Degree Days Irrigation Timer",
+      "category": "Utility",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/master/Irrigation/packageManifest.json",
+      "description": "Use the weather to schedule your irrigation",
+      "tags": [
+        "Irrigation"
+      ]
+    }
+  ]
+}
