@@ -1,11 +1,11 @@
 Task Scheduler ~  Create Task
 <br>
-<br><strong><i>Triggers</i></strong>
+<br><strong><i><small>Triggers</small></i></strong>
 <br>
 <br>
 <br><strong><i>Actions</i></strong>
 <br>
-<br><strong>Action 1.</strong> 
+<br><strong><small>Action 1.</small></strong> 
 <br>
 <br>Program/script:
 <br>        C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
