@@ -17,6 +17,9 @@ metadata {
             name: "PowerView Inverter",
             namespace: "pentalingual",
             author: "Andrew Nunes",
+            description: "Leverages the PowerView API connection to update your SolArk or SunSynk inverter status",
+            category: "Environmental",
+            importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
     )  {
         capability "Refresh"
         capability "PowerMeter"
@@ -32,7 +35,7 @@ metadata {
     preferences {
           input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with the PowerView portal to update Hubitat with your latest solar/battery inverter details.</strong></center>", type: "hidden"
     input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID, and provide this driver your PowerView username and password</i></center>", type: "hidden"
-  input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://pv.inteless.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant page.</center>",  type: "hidden"
+  input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://pv.inteless.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant.</center>",  type: "hidden"
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
         input name: "refreshSched", type: "int", title: "Refresh every how many minutes?", defaultValue: 15  
