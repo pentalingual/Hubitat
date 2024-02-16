@@ -1,11 +1,11 @@
 Task Scheduler ~  Create Task
 
-Triggers
+<strong>Triggers</strong>
 
 
-Actions
+<strong>Actions</strong>
 
-Action 1. 
+<strong>Action 1.</strong> 
 
 Program/script:
         C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
@@ -15,7 +15,7 @@ Location:
         *Select your desired shared network location that Hubitat can access*
 
 
-Action 2. 
+<strong>Action 2. </strong>
 
 Program/script:
         C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
