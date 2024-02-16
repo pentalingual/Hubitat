@@ -1,0 +1,5 @@
+Task Scheduler 
+<i>Action 1. Program/script:</i>
+        <strong>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</strong>
+<i>Argument:</i>
+        <strong>Get-Date | Out-File -FilePath .\batteryreport.txt</strong>
