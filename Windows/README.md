@@ -1,9 +1,9 @@
 Task Scheduler ~  Create Task
 <br>
-<br><strong>Triggers</strong>
+<br><strong><i>Triggers</i></strong>
 <br>
 <br>
-<br><strong>Actions</strong>
+<br><strong><i>Actions</i></strong>
 <br>
 <br><strong>Action 1.</strong> 
 <br>
