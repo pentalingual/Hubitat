@@ -7,7 +7,7 @@
  *      Date          Source        Version     What                                              URL
  *      ----          ------        -------     ----                                              ---
  *      2022-01-22    pentalingual  0.1.0       Starting version
- *      2024-02-17    pentalingual  0.1.5       Simplified logging
+ *      2024-02-17    pentalingual  0.1.5       Simplified debugging
  */
 
 import java.text.SimpleDateFormat
@@ -19,6 +19,9 @@ metadata {
             name: "Laptop Battery",
             namespace: "pentalingual",
             author: "Andrew Nunes",
+            description: "Read a Task Scheduler output from Windows computer for Hubitat to determine its state of charge",
+            category: "Environmental",
+            importUrl:"https://raw.githubusercontent.com/pentalingual/Hubitat/main/Windows/Laptop_Battery.groovy"
     )  {
         capability "Actuator"
         capability "Refresh"
