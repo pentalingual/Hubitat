@@ -1,5 +1,5 @@
 /*
- * Laptop Battery
+ * Windows Battery Driver
  *
  *
  *  Change History:
@@ -7,16 +7,16 @@
  *      Date          Source        Version     What                                              URL
  *      ----          ------        -------     ----                                              ---
  *      2022-01-22    pentalingual  0.1.0       Starting version
- *      2024-02-17    pentalingual  0.1.5       Simplified debugging
+ *      2024-02-17    pentalingual  0.2.0       Simplified debugging
  */
 
 import java.text.SimpleDateFormat
 
-static String version() { return '0.1.0' }
+static String version() { return '0.2.0' }
 
 metadata {
     definition(
-            name: "Laptop Battery",
+            name: "Windows Battery Driver",
             namespace: "pentalingual",
             author: "Andrew Nunes",
             description: "Read a Task Scheduler output from Windows computer for Hubitat to determine its state of charge",
