@@ -101,6 +101,7 @@ void queryData()  {
             boolean battPower = resp.getData().data.battPower> 120
             float curr = Math.round((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
             float battCharge = resp.getData().data.battPower
+            float gridPower = resp.getData().data.gridOrMeterPower
             if(grid) { 
                 sendEvent(name: "powerSource", value: "mains")
             } else {
@@ -124,8 +125,12 @@ void queryData()  {
                 if ( battCharge == 0 ) { 
                     sendEvent(name: "BatteryStatus", value: "Battery not in use") 
                 }
-                if ( battCharge > 0 ) { 
-                    sendEvent(name: "BatteryStatus", value: "Discharging Battery") 
+                if ( battCharge > 0 ) {
+                    if( gridPower <0 ) {
+                    sendEvent(name: "BatteryStatus", value: "Selling Battery to Grid") 
+                    } else {
+                    sendEvent(name: "BatteryStatus", value: "Discharging Battery")    
+                    }
                 }
             }
 
@@ -134,7 +139,7 @@ void queryData()  {
             sendEvent(name: "battery", value:  resp.getData().data.soc, unit: "%")            
             
             sendEvent(name: "PVPower", value: resp.getData().data.pvPower, unit: "W")
-            sendEvent(name: "GridPowerDraw", value: resp.getData().data.gridOrMeterPower, unit: "W")
+            sendEvent(name: "GridPowerDraw", value: gridPower, unit: "W")
             sendEvent(name: "BatteryDraw", value: battCharge, unit: "W")
             sendEvent(name: "GeneratorDraw", value: resp.getData().data.genPower, unit: "W")
         })
