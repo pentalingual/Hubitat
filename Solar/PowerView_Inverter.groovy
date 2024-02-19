@@ -17,19 +17,22 @@ metadata {
             name: "PowerView Inverter",
             namespace: "pentalingual",
             author: "Andrew Nunes",
-            description: "Leverages the PowerView API connection to update your SolArk or SunSynk inverter status",
+            description: "Leverages the PowerView API connection to update Hubitat with your SolArk or SunSynk inverter status",
             category: "Environmental",
             importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
     )  {
         capability "Refresh"
         capability "PowerMeter"
-        capability "Battery"
+        capability "PowerSource"
+        capability "CurrentMeter"
+        capability "Battery" 
 
         attribute "lastresponsetime", "string"
         attribute "PVPower", "number"
-        attribute "LoadPowerDraw", "number"
         attribute "GridPowerDraw", "number"
-        attribute "BatterySOC", "number"
+        attribute "BatteryDraw", "number"
+        attribute "GeneratorDraw", "number"
+        attribute "BatteryStatus", "string"
     }
 
     preferences {
@@ -84,7 +87,7 @@ def refresh() {
 }
 
 
-def queryData()  {
+void queryData()  {
     def key = "Bearer ${state.TokenKey}"
     def paramsEnergy = [  
         uri: "https://pv.inteless.com/api/v1/plant/energy/${plantID}/flow",
@@ -93,10 +96,47 @@ def queryData()  {
     ]
     try {
         httpGet(paramsEnergy, { resp ->
-            sendEvent(name: 'PVPower', value: resp.getData().data.pvPower)
-            sendEvent(name: 'LoadPowerDraw', value: resp.getData().data.loadOrEpsPower)
-            sendEvent(name: 'GridPowerDraw', value: resp.getData().data.gridOrMeterPower)
-            sendEvent(name: 'BatterySOC', value: resp.getData().data.soc)
+            boolean grid = resp.getData().data.gridOrMeterPower > 100
+            boolean solar = resp.getData().data.pvPower > 100
+            boolean battPower = resp.getData().data.battPower> 100
+            float curr = Math.round((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
+            float battCharge = resp.getData().data.battPower
+            if(grid) { 
+                sendEvent(name: "powerSource", value: "mains")
+            } else {
+                if(solar) {
+                       sendEvent(name: "powerSource", value: "dc" )
+                } else {
+                if(battPower) {
+                   sendEvent(name: "powerSource", value: "battery"  )
+                    } else { 
+                       sendEvent(name: "powerSource", value: "unknown")
+                    }
+                }
+            }
+            
+            if (curr <0 ) {
+                sendEvent(name: 'BatteryStatus', value: "Charging Battery from Grid")
+            } else {
+                if ( battCharge < 0 ) { 
+                    sendEvent(name: 'BatteryStatus', value: "Charging Battery from Solar") 
+                }
+                if ( battCharge == 0 ) { 
+                    sendEvent(name: 'BatteryStatus', value: "Battery not in use") 
+                }
+                if ( battCharge > 0 ) { 
+                    sendEvent(name: 'BatteryStatus', value: "Discharging Battery") 
+                }
+            }
+
+            sendEvent(name: "amperage", value: curr, unit: "A")            
+            sendEvent(name: "power", value: resp.getData().data.loadOrEpsPower, unit: "W")
+            sendEvent(name: "battery", value:  resp.getData().data.soc, unit: "%")            
+            
+            sendEvent(name: 'PVPower', value: resp.getData().data.pvPower, unit: "W")
+            sendEvent(name: 'GridPowerDraw', value: resp.getData().data.gridOrMeterPower, unit: "W")
+            sendEvent(name: 'BatteryDraw', value: battCharge, unit: "W")
+            sendEvent(name: 'GeneratorDraw', value: resp.getData().data.genPower, unit: "W")
         })
     } catch (exception) {
         log.error exception
