@@ -1,0 +1,16 @@
+{
+  "packageName": "Windows Battery Driver",
+  "author": "Andrew Nunes",
+  "version": "0.2.0",
+  "minimumHEVersion": "0.0",
+  "dateReleased": "2024-02-17",
+  "drivers": [
+    {
+      "id": "978af680-b126-40ac-a158-74998791900d",
+      "name": "Windows Battery Driver",
+      "namespace": "pentalingual",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Windows/Laptop_Battery.groovy",
+      "required": true
+    }
+  ]
+}
