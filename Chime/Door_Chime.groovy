@@ -1,6 +1,6 @@
 /*
  * Door Chime
- *            This is a fork of Bryan Copeland's 'Simple Door Chime'. I took over after the Alpha release stopped working and added some functionality.
+ *            This is a fork of Bryan Copeland's 'Simple Door Chime'. I took over after the Alpha release stopped working, adding Modes/HSM Functionality.
  *
  *  Change History:
  *
