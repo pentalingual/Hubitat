@@ -1,0 +1,18 @@
+{
+  "packageName": "Door Chime App",
+  "author": "Andrew Nunes",
+  "version": "0.3.0",
+  "minimumHEVersion": "0.0",
+  "dateReleased": "2024-02-15",
+  "apps": [
+    {
+      "id": "08daf881-9a58-431e-8a52-7539c99f5a28",
+      "name": "Door Chime",
+      "namespace": "pentalingual",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Chime/Door_Chime.groovy",
+      "required": true,
+      "oauth": false,
+      "primary": false
+    }
+  ]
+}
