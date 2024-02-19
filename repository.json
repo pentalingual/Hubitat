@@ -9,7 +9,43 @@
       "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/master/Irrigation/packageManifest.json",
       "description": "Use the weather to schedule your irrigation",
       "tags": [
-        "Irrigation"
+        "Irrigation",
+        "Weather",
+        "Water"
+      ]
+    },
+    {
+      "id": "77d70c86-930d-4bdb-82d9-94147168d089",
+      "name": "Door Chime",
+      "category": "Convenience",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Chime/packageManifest.json",
+      "description": "Set up custom sounds to trigger when doors are opened, anytime, only during certain Modes, or based on HSM Status",
+      "tags": [
+        "Doors & Windows",
+        "Alarm Systems",
+        "Notifications"
+      ]
+    },
+    {
+      "id": "764cbc83-2b8b-4bd4-922f-0e73cd726d73",
+      "name": "PowerView Inverter",
+      "category": "Integrations",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/packageManifest.json",
+      "description": "Leverages the PowerView API connection to update Hubitat with your SolArk or SunSynk inverter status",
+      "tags": [
+        "Energy Monitoring",
+        "Cloud"
+      ]
+    },
+    {
+      "id": "8c97796f-4bbd-40eb-a472-352c0e4282e9",
+      "name": "Windows Battery Driver",
+      "category": "Integrations",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Windows/packageManifest.json",
+      "description": "Read a Windows computer Task Schedule for Hubitat to determine its state of charge",
+      "tags": [
+        "Energy Monitoring",
+        "LAN"
       ]
     }
   ]
