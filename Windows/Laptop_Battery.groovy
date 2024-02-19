@@ -20,7 +20,7 @@ metadata {
             namespace: "pentalingual",
             author: "Andrew Nunes",
             description: "Read a Task Scheduler output from Windows computer for Hubitat to determine its state of charge",
-            category: "Environmental",
+            category: "Integrations",
             importUrl:"https://raw.githubusercontent.com/pentalingual/Hubitat/main/Windows/Laptop_Battery.groovy"
     )  {
         capability "Actuator"
