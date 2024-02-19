@@ -96,9 +96,9 @@ void queryData()  {
     ]
     try {
         httpGet(paramsEnergy, { resp ->
-            boolean grid = resp.getData().data.gridOrMeterPower > 100
-            boolean solar = resp.getData().data.pvPower > 100
-            boolean battPower = resp.getData().data.battPower> 100
+            boolean grid = resp.getData().data.gridOrMeterPower > 120
+            boolean solar = resp.getData().data.pvPower > 120
+            boolean battPower = resp.getData().data.battPower> 120
             float curr = Math.round((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
             float battCharge = resp.getData().data.battPower
             if(grid) { 
@@ -116,16 +116,16 @@ void queryData()  {
             }
             
             if (curr <0 ) {
-                sendEvent(name: 'BatteryStatus', value: "Charging Battery from Grid")
+                sendEvent(name: "BatteryStatus", value: "Charging Battery from Grid")
             } else {
                 if ( battCharge < 0 ) { 
-                    sendEvent(name: 'BatteryStatus', value: "Charging Battery from Solar") 
+                    sendEvent(name: "BatteryStatus", value: "Charging Battery from Solar") 
                 }
                 if ( battCharge == 0 ) { 
-                    sendEvent(name: 'BatteryStatus', value: "Battery not in use") 
+                    sendEvent(name: "BatteryStatus", value: "Battery not in use") 
                 }
                 if ( battCharge > 0 ) { 
-                    sendEvent(name: 'BatteryStatus', value: "Discharging Battery") 
+                    sendEvent(name: "BatteryStatus", value: "Discharging Battery") 
                 }
             }
 
@@ -133,10 +133,10 @@ void queryData()  {
             sendEvent(name: "power", value: resp.getData().data.loadOrEpsPower, unit: "W")
             sendEvent(name: "battery", value:  resp.getData().data.soc, unit: "%")            
             
-            sendEvent(name: 'PVPower', value: resp.getData().data.pvPower, unit: "W")
-            sendEvent(name: 'GridPowerDraw', value: resp.getData().data.gridOrMeterPower, unit: "W")
-            sendEvent(name: 'BatteryDraw', value: battCharge, unit: "W")
-            sendEvent(name: 'GeneratorDraw', value: resp.getData().data.genPower, unit: "W")
+            sendEvent(name: "PVPower", value: resp.getData().data.pvPower, unit: "W")
+            sendEvent(name: "GridPowerDraw", value: resp.getData().data.gridOrMeterPower, unit: "W")
+            sendEvent(name: "BatteryDraw", value: battCharge, unit: "W")
+            sendEvent(name: "GeneratorDraw", value: resp.getData().data.genPower, unit: "W")
         })
     } catch (exception) {
         log.error exception
