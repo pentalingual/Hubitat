@@ -1,0 +1,16 @@
+{
+  "packageName": "PowerView Inverter",
+  "author": "Andrew Nunes",
+  "version": "0.2.0",
+  "minimumHEVersion": "0.0",
+  "dateReleased": "2024-01-02",
+  "drivers": [
+    {
+      "id": "e1947fb4-eab5-4b2a-a867-413f6ca89ffe",
+      "name": "PowerView Inverter",
+      "namespace": "pentalingual",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy",
+      "required": true
+    }
+  ]
+}
