@@ -10,7 +10,7 @@
  *      2024-01-02    pentalingual  0.2.0       Added Token Refresh
  */
 
-static String version() { return '0.1.0' }
+static String version() { return '0.2.0' }
 
 metadata {
     definition(
