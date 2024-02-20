@@ -1,5 +1,4 @@
 /*
- * Reol/*
  * Reolink IP Camera
  *
  *
@@ -142,7 +141,7 @@ def getCurrentStatus() {
             } else {
                     sendEvent(name: "CurrentStatus" , value: "Unable to login")
                     if(txtEnable) log.info("There was an error accessing the device, check your credentials and ensure you haven't reached the maximum number of calls in a 30 min session.")
-            state.Connection = "Need to Validate"
+            state.Connection = ""
                 }
         }
     }
@@ -150,7 +149,7 @@ def getCurrentStatus() {
     }
 }  catch (exception) {
         log.error exception
-        state.Connection = "Need to Validate"
+        state.Connection = ""
         sendEvent(name: "CurrentStatus" , value: "Unable to access Host")
         if(txtEnable) log.info("There was an error accessing the device, check to make sure the IP address is valid, the device is online and on the Hubitat's network.")
     }
