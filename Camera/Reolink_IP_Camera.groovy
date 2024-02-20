@@ -26,7 +26,7 @@ metadata {
     {
        capability "Refresh"
        capability "Switch"
-       capability "MotionSensor"
+       // capability "MotionSensor" Not yet encorporated
 
        attribute "switch", "enum", ["on", "off"]
        attribute "lastresponsetime", "Date"
@@ -35,12 +35,12 @@ metadata {
     }
 
     preferences {
-            input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with your Reolink IP Camera to turn its notifications on and off.</strong></center>", type: "hidden"
-            input name: "Instructions", title: "<center><i>To make it work, you'll need to know your Camera's IP Address and provide this driver with your Reolink's local username and password.</i></center>", type: "hidden"
+            input name: "Blank0",  title: "<center><strong>This driver will use the API connection with your Reolink IP Camera to turn its notifications on and off.</strong></center>", type: "hidden"
+            input name: "Instructions", title: "<center><i>To make it work, you'll need to know your Camera's IP Address and provide the Reolink API your camera's local username and password.</i></center>", type: "hidden"
             input name: "Blank1",  title: "<center>For email notifications, you will need to go to the camera's setting page, click into Surveillance, and provide the email settings from your email provider.</center>",  type: "hidden"    
             input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
-            input name: "emailEnable", type: "bool", title: "Control Email notifications On/Off?", defaultValue: false
             input name: "pushEnable", type: "bool", title: "Control Reolink app Push notifications On/Off?", defaultValue: false
+            input name: "emailEnable", type: "bool", title: "Control Email notifications On/Off?", defaultValue: false
             input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
             input name: "ipAddress", type: "string", title: "Camera IP Address", defaultValue: null
             input name: "Username", type: "string", title: "Camera Username", defaultValue: null
