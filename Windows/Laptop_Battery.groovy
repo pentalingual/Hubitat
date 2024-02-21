@@ -46,7 +46,7 @@ preferences {
   input name: "decodeEnable", type: "bool", title: "Enable decoding/Clean non-ANSI characters", defaultValue: true
   input name: "fileLocation", type: "string", title: "Link to the BatteryReport", defaultValue: null
   input("autoUpdatehour", "number", title: "Enable automatic update every X hours", defaultValue: 0, required: true, displayDuringSetup: true)
-  input("autoUpdatemin", "number", title: "Enable automatic update every N minutes", description: "<small>If every X hour update is indicated, wait until N minutes past the hour</small>",defaultValue: 0, required: true, displayDuringSetup: true)
+  input("autoUpdatemin", "number", title: "Enable automatic update every N minutes", description: "<small>or if every X hour update is indicated, wait until N minutes past the hour</small>",defaultValue: 0, required: true, displayDuringSetup: true)
 }
 
 
