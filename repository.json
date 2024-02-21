@@ -45,6 +45,19 @@
       "description": "Read a Windows computer Task Schedule for Hubitat to determine its state of charge",
       "tags": [
         "Energy Monitoring",
+        "Misc. Devices",
+        "LAN"
+      ]
+    },
+    {
+      "id": "7a5a16c7-d82e-4436-bc62-9f34354b032a",
+      "name": "Reolink IP Camera",
+      "category": "Integrations",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Camera/packageManifest.json",
+      "description": "Turns on or off your Reolink IP Camera's motion detection push/email notifications",
+      "tags": [
+		    "Monitoring",
+		    "Notifications",
         "LAN"
       ]
     }
