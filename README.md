@@ -7,7 +7,7 @@
 <br>SunSynk and SolArk Solar inverters use PowerView app for reporting and monitoring. This driver allows you to set a refresh schedule to pull the PowerView API. It maintains the current Inverter states as a device in Hubitat. These are based on Power production and energy flow, grid usage, and Battery charge. They can be used to trigger other automations.
 <br><br>
 <br><strong>2. <font size="+2">Irrigation:</font> Degree Days Timer</strong><br>
-At UC Davis, A.J. Winkler developed a method to measure Heat Summation, and use this for standardizing agriculture decisions. This App applies that approach to irrigation and creates a dynamic watering schedule based on daily temperatures and even rain in your area. The built in calculator allows you to model what your watering schedule will look like. You can install multiple instances for different irrigation area rules.
+<br>At UC Davis, A.J. Winkler developed a method to measure Heat Summation, and use this for standardizing agriculture decisions. This App applies that approach to irrigation and creates a dynamic watering schedule based on daily temperatures and even rain in your area. The built in calculator allows you to model what your watering schedule will look like. You can install multiple instances for different irrigation area rules.
 <br><br>
 <br><strong>3. <font size="+2">Chime:</font> Door Chime</strong> (fork of the original Brian Copeland build)<br>
 <br>This App is a fork of the original Brian Copeland build, that simply makes a chime or beep, or Speech request when a door on the list opens. I fixed issues added functionality to interact and test your chime devices, and to block chimes during selected Hub modes, or HSM Status. You can install multiple instances for different chime rules.
