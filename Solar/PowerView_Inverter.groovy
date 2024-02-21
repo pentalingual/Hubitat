@@ -10,7 +10,7 @@
  *      2024-01-02    pentalingual  0.2.0       Added Token Refresh
  */
 
-static String version() { return '0.2.0' }
+static String version() { return '0.1.0' }
 
 metadata {
     definition(
@@ -18,7 +18,7 @@ metadata {
             namespace: "pentalingual",
             author: "Andrew Nunes",
             description: "Leverages the PowerView API connection to update Hubitat with your SolArk or SunSynk inverter status",
-            category: "Integrations",
+            category: "Environmental",
             importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
     )  {
         capability "Refresh"
@@ -58,6 +58,8 @@ def updated() {
     log.info "updated... refreshing every ${refreshSched} minutes"
     schedule("0 0/${refreshSched} * * * ?", refresh)
     log.warn "debug logging is: ${logEnable}"
+    state.Amperage = "the total output current the inverter is sustaining from DC Power Sources (Grid's AC current is passthrough and not inverted)"
+    state.Power = "the total number of Watts being drawn by the load/home"
 }
 
 def getToken() {
@@ -74,7 +76,7 @@ def getToken() {
         body: body1
     ]
     httpPostJson(paramsTOK, { resp -> 
-        state.TokenKey = resp.getData().data.access_token
+        state.xTokenKeyx = resp.getData().data.access_token
         attemptsNo = 1
         queryData() 
     })
@@ -88,7 +90,7 @@ def refresh() {
 
 
 void queryData()  {
-    def key = "Bearer ${state.TokenKey}"
+    def key = "Bearer ${state.xTokenKeyx}"
     def paramsEnergy = [  
         uri: "https://pv.inteless.com/api/v1/plant/energy/${plantID}/flow",
         headers: [ 'Authorization' : key ],
@@ -115,7 +117,7 @@ void queryData()  {
                     }
                 }
             }
-            
+            String prevStatus = BatteryStatus
             if (curr <0 ) {
                 sendEvent(name: "BatteryStatus", value: "Charging Battery from Grid")
             } else {
@@ -133,7 +135,7 @@ void queryData()  {
                     }
                 }
             }
-
+                       
             sendEvent(name: "amperage", value: curr, unit: "A")            
             sendEvent(name: "power", value: resp.getData().data.loadOrEpsPower, unit: "W")
             sendEvent(name: "battery", value:  resp.getData().data.soc, unit: "%")            
@@ -142,10 +144,20 @@ void queryData()  {
             sendEvent(name: "GridPowerDraw", value: gridPower, unit: "W")
             sendEvent(name: "BatteryDraw", value: battCharge, unit: "W")
             sendEvent(name: "GeneratorDraw", value: resp.getData().data.genPower, unit: "W")
+            
+            if (txtEnable) {
+                if (BatteryStatus != "Battery not in use") {
+                    float AbsBatt = Math.abs(battCharge)
+                    if (BatteryStatus != prevStatus)  log.info("${BatteryStatus} at a rate of ${AbsBatt}")
+                } else { 
+                    log.info("Power Source is ${powerSource}, Load is drawing ${power}")
+                }
+                if (amperage>50) log.warn("Inverter pushing more than ${amperage} amps")
+            }
         })
     } catch (exception) {
         log.error exception
-        log.error "token may have expired, trying to get a new one; number of attempts is ${attemptsNo} and token is ${key} "
+        if (logEnable) log.debug("token may have expired, trying to get a new one; number of attempts is ${attemptsNo} and token is ${key} ")
         if (attemptsNo == 0) { 
             getToken() 
         }
