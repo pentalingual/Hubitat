@@ -1,6 +1,6 @@
 # Hubitat
 
-<br>I've built these functional applications/device drivers and use them heavily, because I want my Hubitat automations to be integrated intelligently into my smart home. Since these apps and drivers haven't been ported to Hubitat previously, I decided to build them for myself. I share with the community to save anyone else the trouble. 
+<font size="14"><br>I've built these functional applications/device drivers and use them heavily, because I want my Hubitat automations to be integrated intelligently into my smart home. Since these apps and drivers haven't been ported to Hubitat previously, I decided to build them for myself. I share with the community to save anyone else the trouble. 
 <br>
 <br>
 <br><strong>1.<font size="+2">Solar:</font> PowerView Inverter</strong><br>
@@ -23,3 +23,4 @@ This device driver turns on or off notifications your Reolink IP Camera motion d
 <br>
 <br><strong>6. <font size="+2">HVAC:</font> Smarter HVAC Manager (for two story homes)</strong><br>
 <i>Presently this is written into 5 different complicated interacting rules but want to simplify the interface and port it onto a coherent app. It monitors current and average house temperatures in a 2-story home and uses classic HVAC methods to integrate upstairs and downstairs thermostats into a single smart, interactive home-HVAC controller.</i>
+</font>
