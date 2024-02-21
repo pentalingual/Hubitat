@@ -20,7 +20,7 @@ metadata {
             namespace: "pentalingual",
             author: "Andrew Nunes",
             description: "Read a Task Scheduler output from Windows computer for Hubitat to determine its state of charge",
-            category: "Integrations",
+            category: "Environmental",
             importUrl:"https://raw.githubusercontent.com/pentalingual/Hubitat/main/Windows/Laptop_Battery.groovy"
     )  {
         capability "Actuator"
@@ -37,15 +37,16 @@ String bSl = $/\/$
 String PowerShellLoc = "C:${bSl}Windows${bSl}System32${bSl}WindowsPowerShell${bSl}v1.0${bSl}powershell.exe"
 
 preferences {
+    
   input name: "Blank0",  title: "<center><strong>This driver will read a text file from a shared network location that is updated by your computer with the battery percentage. </strong></center>", type: "hidden"
-    input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to create a <strong>task</strong> in the Windows<strong> Task Scheduler </strong>that periodically maintains a text file with the device's current battery percent on a network shared folder (one that Hubitat can access, like a Network attached server).</i></center>", type: "hidden"
-  input name: "Blank1",  title: "<center>**********<br>Here are the windows scripts that need to be embeded in a task's actions to keep your device battery percentage updated:<br>1. <strong>Program/script: <br></strong><i>${PowerShellLoc}</i><br><strong>argument: </strong><br><i>Get-Date | Out-File -FilePath .${bSl}batteryreport.txt</i></center>",  type: "hidden"
+    input name: "Instructions", title: "<center><i>To make it work, you'll need to create a <strong>task</strong> in the Windows<strong> Task Scheduler </strong>to maintain a text file with the device's battery percent in a folder that Hubitat can access (like a Network attached server).</i></center>", type: "hidden"
+  input name: "Blank1",  title: "<center>**********<br>Here are the instructions to set up the task to keep your device battery percentage updated:<br><a href='https://github.com/pentalingual/Hubitat/blob/main/Windows/README.md'> Read Me!</a><br>**********</center>",  type: "hidden"
     input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
   input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
   input name: "decodeEnable", type: "bool", title: "Enable decoding/Clean non-ANSI characters", defaultValue: true
   input name: "fileLocation", type: "string", title: "Link to the BatteryReport", defaultValue: null
-  input("autoUpdatehour", "number", title: "Enable automatic update every n hours", defaultValue: 0, required: true, displayDuringSetup: true)
-  input("autoUpdatemin", "number", title: "Enable automatic update every n minutes", defaultValue: 0, required: true, displayDuringSetup: true)
+  input("autoUpdatehour", "number", title: "Enable automatic update every X hours", defaultValue: 0, required: true, displayDuringSetup: true)
+  input("autoUpdatemin", "number", title: "Enable automatic update every N minutes", description: "<small>If every X hour update is indicated, wait until N minutes past the hour</small>",defaultValue: 0, required: true, displayDuringSetup: true)
 }
 
 
@@ -84,8 +85,8 @@ def schedUpdate() {
     if (autoUpdatemin+autoUpdatehour>0) { 
         if (autoUpdatemin>0) { 
             if (autoUpdatehour>0) { 
-                schedule("0 0/${autoUpdatemin} 0/${autoUpdatehour} * * ?", refresh)
-                if (logEnable) log.debug("autoupdate: refresh schedule set for every ${autoUpdatehour} hour(s) and ${autoUpdatemin} minute(s)")
+                schedule("0 ${autoUpdatemin} 0/${autoUpdatehour} * * ?", refresh)
+                if (logEnable) log.debug("autoupdate: refresh schedule set for every ${autoUpdatehour} hour(s) at ${autoUpdatemin} minute(s) past the hour")
             } else {
                 schedule("0 0/${autoUpdatemin} * * * ?", refresh)
                 if (logEnable) log.debug("autoupdate: refresh schedule set for every ${autoUpdatemin} minute(s)")
@@ -95,7 +96,7 @@ def schedUpdate() {
             if (logEnable) log.debug("autoupdate: refresh schedule set for every ${autoUpdatehour} hour(s)")
         }
     }
-}
+} 
 
                                         
 
