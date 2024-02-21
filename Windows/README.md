@@ -2,6 +2,7 @@ Task Scheduler ~  Create Task
 <br>
 <br><strong><i><small>Triggers</small></i></strong>
 <br>
+<br><i>Set it to start the task on a schedule corresponding to a few minutes before your driver refresh</i>
 <br>
 <br><strong><i>Actions</i></strong>
 <br>
