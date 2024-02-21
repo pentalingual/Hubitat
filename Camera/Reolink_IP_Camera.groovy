@@ -17,7 +17,7 @@ metadata {
        name: "Reolink IP Camera",
        namespace: "pentalingual",
        author: "Andrew Nunes",
-       description: "Turns on or off your Reolink IP Camera motion detection notifications",
+       description: "Turns on or off your Reolink IP Camera's motion detection push/email notifications",
 	   category: "Integrations",
        importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Camera/Reolink_IP_Camera.groovy",
 	   iconUrl: "",
