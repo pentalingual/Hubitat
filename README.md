@@ -2,6 +2,7 @@
 
 <br>I've built these functional applications/device drivers and use them heavily, because I want my Hubitat automations to be integrated intelligently into my smart home. Since these apps and drivers haven't been ported to Hubitat previously, I decided to build them for myself. I share with the community to save anyone else the trouble. 
 <br>
+<br>
 <br><strong>1. Solar: PowerView Inverter</strong><br>
 SunSynk and SolArk Solar inverters use PowerView app for reporting and monitoring. This driver allows you to set a refresh schedule to pull the PowerView API. It maintains the current Inverter states as a device in Hubitat. These are based on Power production and energy flow, grid usage, and Battery charge. They can be used to trigger other automations.
 <br>   
@@ -18,7 +19,7 @@ After setting up a Task Schedule on your battery powered Windows computer, this 
 This device driver turns on or off notifications your Reolink IP Camera motion detection notifications. This is useful driver to turn on with HSM is activated so you get Reolink motion notifications once HSM is Armed. 
 <br>Requested: Add MotionSensor capability to get Active motion events in Hubitat from your Reolink IP Camera
 <br>
-Coming Soon:
+<br><i>Coming Soon:</i>
 <br>
 <br><strong>6. HVAC: Smarter HVAC Manager (for two story homes)</strong><br>
-Presently this is written into 5 different complicated interacting rules but want to simplify the interface and port it onto a coherent app. It monitors current and average house temperatures in a 2-story home and uses classic HVAC methods to integrate upstairs and downstairs thermostats into a single smart, interactive home-HVAC controller.
+<i>Presently this is written into 5 different complicated interacting rules but want to simplify the interface and port it onto a coherent app. It monitors current and average house temperatures in a 2-story home and uses classic HVAC methods to integrate upstairs and downstairs thermostats into a single smart, interactive home-HVAC controller.</i>
