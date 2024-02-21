@@ -56,8 +56,8 @@
       "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Camera/packageManifest.json",
       "description": "Turns on or off your Reolink IP Camera's motion detection push/email notifications",
       "tags": [
-		    "Monitoring",
-		    "Notifications",
+	"Monitoring",
+	"Notifications",
         "LAN"
       ]
     }
