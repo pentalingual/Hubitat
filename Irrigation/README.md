@@ -1,0 +1,2 @@
+<strong>Degree Days Timer</strong><br>
+<br>At UC Davis, A.J. Winkler developed a method to measure Heat Summation, and use this for standardizing agriculture decisions. This App applies that approach to irrigation and creates a dynamic watering schedule based on daily temperatures and even rain in your area. The built in calculator allows you to model what your watering schedule will look like. You can install multiple instances for different irrigation area rules.
