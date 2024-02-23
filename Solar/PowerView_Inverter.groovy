@@ -10,7 +10,7 @@
  *      2024-01-02    pentalingual  0.2.0       Added Token Refresh
  */
 
-static String version() { return '0.1.0' }
+static String version() { return '0.2.0' }
 
 metadata {
     definition(
@@ -18,7 +18,7 @@ metadata {
             namespace: "pentalingual",
             author: "Andrew Nunes",
             description: "Leverages the PowerView API connection to update Hubitat with your SolArk or SunSynk inverter status",
-            category: "Environmental",
+            category: "Integrations",
             importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
     )  {
         capability "Refresh"
@@ -36,9 +36,9 @@ metadata {
     }
 
     preferences {
-          input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with the PowerView portal to update Hubitat with your latest solar/battery inverter details.</strong></center>", type: "hidden"
-    input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID, and provide this driver your PowerView username and password</i></center>", type: "hidden"
-  input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://pv.inteless.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant.</center>",  type: "hidden"
+        input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with the PowerView portal to update Hubitat with your latest solar/battery inverter details.</strong></center>", type: "hidden"
+        input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID, and provide this driver your PowerView username and password</i></center>", type: "hidden"
+        input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://pv.inteless.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant.</center>",  type: "hidden"
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
         input name: "refreshSched", type: "int", title: "Refresh every how many minutes?", defaultValue: 15  
@@ -54,11 +54,16 @@ def logsOff() {
     device.updateSetting("logEnable", [value: "false", type: "bool"])
 }
 
+//* def initialize() { clear states
+//*     def state.Amperage & state.Power descriptions 
+//*     Get plant detail limit totalPower def state.InverterSize
+//*     def inverter ampere warning limit
+
 def updated() {
     log.info "updated... refreshing every ${refreshSched} minutes"
     schedule("0 0/${refreshSched} * * * ?", refresh)
     log.warn "debug logging is: ${logEnable}"
-    state.Amperage = "the total output current the inverter is sustaining from DC Power Sources (Grid's AC current is passthrough and not inverted)"
+    state.Amperage = "the total AC output current the inverter is creating from DC Power Sources (grid AC current is passthrough/not inverted)"
     state.Power = "the total number of Watts being drawn by the load/home"
 }
 
@@ -101,9 +106,14 @@ void queryData()  {
             boolean grid = resp.getData().data.gridOrMeterPower > 120
             boolean solar = resp.getData().data.pvPower > 120
             boolean battPower = resp.getData().data.battPower> 120
-            float curr = Math.round((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
-            float battCharge = resp.getData().data.battPower
-            float gridPower = resp.getData().data.gridOrMeterPower
+            float curr = ((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
+            float amperes = curr.round(2)
+            int battCharge = resp.getData().data.battPower
+            int gridPower = resp.getData().data.gridOrMeterPower
+            int battSOC = resp.getData().data.soc
+            def prevStatus = BatteryStatus
+            def prevSource = powerSource
+            
             if(grid) { 
                 sendEvent(name: "powerSource", value: "mains")
             } else {
@@ -117,43 +127,47 @@ void queryData()  {
                     }
                 }
             }
-            String prevStatus = BatteryStatus
-            if (curr <0 ) {
-                sendEvent(name: "BatteryStatus", value: "Charging Battery from Grid")
+           //* declare battery var first and send event la
+            String batStat = ""
+            if (amperes <0 ) {
+                batStat = "Charging Battery from Grid"
             } else {
                 if ( battCharge < 0 ) { 
-                    sendEvent(name: "BatteryStatus", value: "Charging Battery from Solar") 
+                     batStat = "Charging Battery from Solar"
                 }
                 if ( battCharge == 0 ) { 
-                    sendEvent(name: "BatteryStatus", value: "Battery not in use") 
+                    batStat = "Battery not in use"
                 }
                 if ( battCharge > 0 ) {
                     if( gridPower <0 ) {
-                    sendEvent(name: "BatteryStatus", value: "Selling Battery to Grid") 
+                    batStat = "Selling Battery to Grid"
                     } else {
-                    sendEvent(name: "BatteryStatus", value: "Discharging Battery")    
+                    batStat = "Discharging Battery"  
                     }
                 }
             }
                        
-            sendEvent(name: "amperage", value: curr, unit: "A")            
+            sendEvent(name: "amperage", value: amperes, unit: "A")            
             sendEvent(name: "power", value: resp.getData().data.loadOrEpsPower, unit: "W")
-            sendEvent(name: "battery", value:  resp.getData().data.soc, unit: "%")            
+            sendEvent(name: "battery", value:  battSOC, unit: "%")            
             
             sendEvent(name: "PVPower", value: resp.getData().data.pvPower, unit: "W")
             sendEvent(name: "GridPowerDraw", value: gridPower, unit: "W")
             sendEvent(name: "BatteryDraw", value: battCharge, unit: "W")
             sendEvent(name: "GeneratorDraw", value: resp.getData().data.genPower, unit: "W")
+            sendEvent(name: "BatteryStatus", value: batStat)
             
             if (txtEnable) {
-                if (BatteryStatus != "Battery not in use") {
-                    float AbsBatt = Math.abs(battCharge)
-                    if (BatteryStatus != prevStatus)  log.info("${BatteryStatus} at a rate of ${AbsBatt}")
-                } else { 
-                    log.info("Power Source is ${powerSource}, Load is drawing ${power}")
+                if (batStat == "Battery not in use") {
+                    log.info("Power Source is ${powerSource}, Load is drawing ${power} watts. Battery is at a ${battSOC} % charge.")
+                   } else { 
+                    int AbsBatt = Math.abs(battCharge)
+                    log.info("${batStat} at a rate of ${AbsBatt} watts. Battery is at a ${battSOC} % charge.")
+                
                 }
-                if (amperage>50) log.warn("Inverter pushing more than ${amperage} amps")
+                if (amperage>20) log.warn("Inverter pushing ${amperage} amps")
             }
+            
         })
     } catch (exception) {
         log.error exception
@@ -163,4 +177,4 @@ void queryData()  {
         }
         return null
     }
-}
+
