@@ -58,7 +58,7 @@ def logsOff() {
 
 
 def initialize() {
-     log.info "Initializing the PowerView Service..."
+     log.info "Initializing the PowerView service..."
      state.clear()
      state.Amperage = "the AC output being inverted from DC Power Sources (grid/gen current is not inverted)"
      state.Power = "the total number of Watts being drawn by the load/home"
