@@ -16,9 +16,9 @@ definition(
 	name: "Degree Days Irrigation Timer",
 	namespace: "pentalingual",
 	author: "Andrew Nunes",
-	description: "Irrigation scheduler based on cumulative degree days since last watering or precipication",
+	description: "Irrigation scheduler based on cumulative hot degree days since last watering (or precipication)",
 	category: "Utility",
-        importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/master/Irrigation/Degree_Days_Irrigation_Timer.groovy",
+    importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Degree_Days_Irrigation_Timer.groovy",
 	iconUrl: "",
 	iconX2Url: ""
 )
@@ -126,7 +126,9 @@ def mainPage() {
             
                 input "degreeOver", "number", title:"Minimum Degree Days (MDD) to add at zero:", submitOnChange: false, defaultValue: sampleMDD
                 paragraph "<small>* MDD overrides the Zero Degree Bound subtractor and guarantees a minimum watering frequency each (CDD/MDD) days when the highs are near or below the Zero Degree Bound in cool seasons, absent any precipitation.</small>"
-                }    
+                input "useRain", "bool", title: "Use rain events for irrigation", submitOnChange: false, defaultValue: true
+            paragraph "<small>* Rain events should be ignored if these plants are not exposed to rain.</small>"
+        }    
             section {
                  input "enableLog", "bool", title: "Enable Debug Logging", submitOnChange: false, defaultValue: true
             }
@@ -274,10 +276,11 @@ def irrPrerun() {
     }
         tempCDD = atomicState.CDD + ddToday
     atomicState.CDD = tempCDD
-    if(todaysRain >0) {
+    if(useRain && todaysRain >0) {
         subRain = Math.round(degreeDays * todaysRain)
-        log.info "Adding ${ddToday} degree days, but with ${todaysRain} inches of rain today and a cumulative ${tempCDD} degree days, we are also subtracting ${subRain} from that CDD total."
-        atomicState.CDD = tempCDD - subRain
+        maxRain = Math.min(subRain, tempCDD)
+        log.info "Adding ${ddToday} degree days, but with ${todaysRain} inches of rain today and a cumulative ${tempCDD} degree days, we are also subtracting ${maxRain} from that CDD total."
+        atomicState.CDD = tempCDD - maxRain
     }   else {   
     if(atomicState.CDD > degreeDays) {
         atomicState.CDD = tempCDD - degreeDays
