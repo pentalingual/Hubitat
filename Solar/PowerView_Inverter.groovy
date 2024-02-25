@@ -8,9 +8,10 @@
  *      ----          ------        -------     ----                                              ---
  *      2023-09-24    pentalingual  0.1.0       Starting version
  *      2024-01-02    pentalingual  0.2.0       Added Token Refresh
+ *      2024-02-25    pentalingual  0.3.0       Added inverter Details & logging
  */
 
-static String version() { return '0.2.0' }
+static String version() { return '0.3.0' }
 
 metadata {
     definition(
@@ -21,6 +22,7 @@ metadata {
             category: "Integrations",
             importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
     )  {
+        capability "Initialize"
         capability "Refresh"
         capability "PowerMeter"
         capability "PowerSource"
@@ -37,7 +39,7 @@ metadata {
 
     preferences {
         input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with the PowerView portal to update Hubitat with your latest solar/battery inverter details.</strong></center>", type: "hidden"
-        input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID, and provide this driver your PowerView username and password</i></center>", type: "hidden"
+        input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID to associate with this driver, and provide the API your PowerView username and password</i></center>", type: "hidden"
         input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://pv.inteless.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant.</center>",  type: "hidden"
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
@@ -54,20 +56,25 @@ def logsOff() {
     device.updateSetting("logEnable", [value: "false", type: "bool"])
 }
 
-//* def initialize() { clear states
-//*     def state.Amperage & state.Power descriptions 
-//*     Get plant detail limit totalPower def state.InverterSize
-//*     def inverter ampere warning limit
 
+def initialize() {
+     log.info "Initializing the PowerView Service..."
+     state.clear()
+     state.Amperage = "the AC output being inverted from DC Power Sources (grid/gen current is not inverted)"
+     state.Power = "the total number of Watts being drawn by the load/home"
+     getToken()
+     runIn(5,getPlantDetails)
+}
+                  
+                  
 def updated() {
-    log.info "updated... refreshing every ${refreshSched} minutes"
+    log.info "Updated... refreshing every ${refreshSched} minutes. Debug logging is: ${logEnable}."
     schedule("0 0/${refreshSched} * * * ?", refresh)
-    log.warn "debug logging is: ${logEnable}"
-    state.Amperage = "the total AC output current the inverter is creating from DC Power Sources (grid AC current is passthrough/not inverted)"
-    state.Power = "the total number of Watts being drawn by the load/home"
+    
 }
 
-def getToken() {
+
+void getToken() {
     body1 = ['username':Username,'password':Password,'grant_type':'password','client_id':'csp-web','source':'elinter']
     def URIa = "https://openapi.inteless.com/v1/oauth/token"
     def URIb = "https://pv.inteless.com/api/v1/oauth/token"
@@ -80,11 +87,32 @@ def getToken() {
         ],
         body: body1
     ]
-    httpPostJson(paramsTOK, { resp -> 
-        state.xTokenKeyx = resp.getData().data.access_token
-        attemptsNo = 1
-        queryData() 
-    })
+    //* Catch error and define. 443. 401, read timed out
+    try {
+        httpPostJson(paramsTOK, { resp -> 
+            state.xTokenKeyx = resp.getData().data.access_token
+            attemptsNo = 1
+            runIn(10,queryData)
+        })
+    } catch (Exception) {
+     log.debug "unable to login. This could be due to an invalid username/password, or PowerView may be down."
+    }
+}
+
+void getPlantDetails() {
+    def key = "Bearer ${state.xTokenKeyx}"
+    body5 = ['status': 1, 'type': -1, 'limit': 1, 'page': 1]
+    def paramsInitial = [  
+        uri: "https://pv.inteless.com/api/v1/plant/${plantID}/inverters",
+        headers: [ 'Authorization' : key], 
+        query: body5
+        ]
+        
+        httpGet(paramsInitial,  { resp ->
+            def invLimit = resp.getData().data.infos.ratePower[0]
+            state.SystemSize =  invLimit.toInteger()
+            state.inverterSN = resp.getData().data.infos.sn[0]
+        })
 }
 
 
@@ -103,33 +131,36 @@ void queryData()  {
     ]
     try {
         httpGet(paramsEnergy, { resp ->
+            
             boolean grid = resp.getData().data.gridOrMeterPower > 120
             boolean solar = resp.getData().data.pvPower > 120
             boolean battPower = resp.getData().data.battPower> 120
             float curr = ((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
-            float amperes = curr.round(2)
+            float amperesEst = curr.round(2)
             int battCharge = resp.getData().data.battPower
             int gridPower = resp.getData().data.gridOrMeterPower
+            if (resp.getData().data.toGrid) gridPower = -gridPower
             int battSOC = resp.getData().data.soc
             def prevStatus = BatteryStatus
             def prevSource = powerSource
+            def newSource = ""
             
-            if(grid) { 
-                sendEvent(name: "powerSource", value: "mains")
+            if(grid) {
+                newSource = "mains"
             } else {
                 if(solar) {
-                       sendEvent(name: "powerSource", value: "dc" )
+                    newSource = "dc"
                 } else {
                 if(battPower) {
-                   sendEvent(name: "powerSource", value: "battery"  )
+                   newSource =  "battery"  
                     } else { 
-                       sendEvent(name: "powerSource", value: "unknown")
+                       newSource = "unknown"
                     }
                 }
             }
-           //* declare battery var first and send event la
+            
             String batStat = ""
-            if (amperes <0 ) {
+            if (amperesEst <0 ) {
                 batStat = "Charging Battery from Grid"
             } else {
                 if ( battCharge < 0 ) { 
@@ -146,10 +177,11 @@ void queryData()  {
                     }
                 }
             }
-                       
-            sendEvent(name: "amperage", value: amperes, unit: "A")            
+                          
             sendEvent(name: "power", value: resp.getData().data.loadOrEpsPower, unit: "W")
-            sendEvent(name: "battery", value:  battSOC, unit: "%")            
+            sendEvent(name: "battery", value:  battSOC, unit: "%")         
+            
+            sendEvent(name: "powerSource", value: newSource)
             
             sendEvent(name: "PVPower", value: resp.getData().data.pvPower, unit: "W")
             sendEvent(name: "GridPowerDraw", value: gridPower, unit: "W")
@@ -159,16 +191,21 @@ void queryData()  {
             
             if (txtEnable) {
                 if (batStat == "Battery not in use") {
-                    log.info("Power Source is ${powerSource}, Load is drawing ${power} watts. Battery is at a ${battSOC} % charge.")
+                    if(newSource && battCharge && gridPower) {
+                        log.info "Power Source is ${powerSource}, Load is drawing ${power} watts. Battery is at a ${battSOC}% charge."
+                    } else {
+                        log.info "PowerView API is offline. We will try again in ${refreshSched} minutes."
+                    }
                    } else { 
                     int AbsBatt = Math.abs(battCharge)
-                    log.info("${batStat} at a rate of ${AbsBatt} watts. Battery is at a ${battSOC} % charge.")
+                    log.info "${batStat} at a rate of ${AbsBatt} watts. Battery is at a ${battSOC}% charge."
                 
                 }
-                if (amperage>20) log.warn("Inverter pushing ${amperage} amps")
+                
             }
             
         })
+        getAmperage()
     } catch (exception) {
         log.error exception
         if (logEnable) log.debug("token may have expired, trying to get a new one; number of attempts is ${attemptsNo} and token is ${key} ")
@@ -177,4 +214,50 @@ void queryData()  {
         }
         return null
     }
+}
 
+void getAmperage() {
+     def key = "Bearer ${state.xTokenKeyx}"
+     def paramsAmps = [  
+        uri: "https://pv.inteless.com/api/v1/inverter/${state.inverterSN}/realtime/output",
+        headers: [ 'Authorization' : key ],
+        requestContentType: "application/x-www-form-urlencoded"
+    ]
+    
+        httpGet(paramsAmps, { resp ->
+            
+            float valVac1 = 0
+            def vac1 = resp.getData().data.vip[0]
+            if( vac1 ) {
+                vac1 = vac1.current
+                valVac1 = vac1.toFloat()
+                            } else {
+                 valVac1 = 0
+                }
+
+            float valVac2 = 0
+            def vac2 = resp.getData().data.vip[1]
+            if( vac2 ) {
+                vac2 = vac2.current
+                valVac2 = vac2.toFloat()
+                            } else {
+                 valVac2 = 0
+                }
+            
+            float valVac3 = 0
+            def vac3 = resp.getData().data.vip[2]
+            if( vac3 ) {
+                vac3 = vac3.current
+                valVac3 = vac3.toFloat()
+            } else {
+                 valVac3 = 0
+                }
+            
+            float amperes = (valVac1 + valVac3 + valVac2).round(2)
+            // invLimit warning = 66.66% power at 120 volts is SystemSize/180
+            int invLimit = state.SystemSize/180
+            int invOutput = (amperes*66.66)/invLimit
+            if ( amperes>invLimit ) log.warn("Inverter pushing ${amperes} amps, ${invOutput}% of the inverter limit.")
+            sendEvent(name: "amperage", value: amperes, unit: "A")         
+}) 
+}
