@@ -18,7 +18,7 @@ metadata {
             name: "PowerView Inverter",
             namespace: "pentalingual",
             author: "Andrew Nunes",
-            description: "Leverages the PowerView API connection to update Hubitat with your SolArk or SunSynk inverter status",
+            description: "Leverages the PowerView API to update Hubitat with your SolArk or SunSynk inverter status",
             category: "Integrations",
             importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
     )  {
