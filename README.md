@@ -4,7 +4,7 @@
 <br>
 <br>
 <br><strong>1.<font size="+2">Solar:</font> PowerView Inverter</strong><br>
-<br>SunSynk and SolArk Solar inverters use PowerView app for reporting and monitoring. This driver allows you to set a refresh schedule to pull the PowerView API. It maintains the current Inverter states as a device in Hubitat. These are based on Power production and energy flow, grid usage, and Battery charge. They can be used to trigger other automations.
+<br>SunSynk and SolArk Solar inverters use PowerView app for reporting and monitoring. This driver allows you to set a refresh schedule to pull the PowerView API. It maintains the current Inverter states as a device in Hubitat. These are based on Power production and energy flow, grid usage, and battery charge. The device can be used to trigger other automations.
 <br><br>
 <br><strong>2. <font size="+2">Irrigation:</font> Degree Days Timer</strong><br>
 <br>At UC Davis, A.J. Winkler developed a method to measure Heat Summation, and use this for standardizing agriculture decisions. This App applies that approach to irrigation and creates a dynamic watering schedule based on daily temperatures and even rain in your area. The built in calculator allows you to model what your watering schedule will look like. You can install multiple instances for different irrigation area rules.
