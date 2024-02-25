@@ -31,7 +31,7 @@
       "name": "PowerView Inverter",
       "category": "Integrations",
       "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/packageManifest.json",
-      "description": "Leverages the PowerView API connection to update Hubitat with your SolArk or SunSynk inverter status",
+      "description": "Leverages the PowerView API to update Hubitat with your SolArk or SunSynk inverter status",
       "tags": [
         "Energy Monitoring",
         "Cloud"
