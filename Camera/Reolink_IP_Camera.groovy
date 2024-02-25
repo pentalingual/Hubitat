@@ -10,7 +10,7 @@
  *      2024-02-20    pentalingual  0.2.0       Added improved connection management
  */
 
-static String version() { return '0.1.0' }
+static String version() { return '0.2.0' }
 
 metadata {
     definition(
@@ -107,7 +107,7 @@ def getCurrentStatus() {
                 if(txtEnable) log.info("Reolink camera push notifications are off")
                 sendEvent(name: "CurrentStatus" , value:"Idle")
             } else {         
-                if (txtEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${attemptsNo} and token is ${state.tokenKey} "
+                if (txtEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${state.attemptsNo} and token is ${state.tokenKey} "
                 if (state.attemptsNo == 0) { 
                     getToken() 
                 } else {
@@ -135,7 +135,7 @@ def getCurrentStatus() {
                 if(txtEnable) log.info("Reolink camera Email notifications are off")
                 sendEvent(name: "CurrentStatus" , value:"Idle")
             } else { 
-        if (txtEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${attemptsNo} and token is ${state.tokenKey} "
+        if (logEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${state.attemptsNo} and token is ${state.tokenKey} "
         if (state.attemptsNo == 0) { 
             getToken() 
             } else {
@@ -165,6 +165,7 @@ def updated() {
 
 def on() {
     sendEvent(name: "CurrentStatus" , value: "Turning On Notifications")
+    state.attemptsNo = 0  
     if ( pushEnable ) {
         if (logEnable) log.info("Turning on Push Notifications")
         uri = "http://${ipAddress}/api.cgi?cmd=SetPush&token=${state.tokenKey}"
@@ -196,6 +197,7 @@ def on() {
 
 def off() {
     sendEvent(name: "CurrentStatus" , value: "Turning Off Notifications")
+    state.attemptsNo = 0  
     if ( pushEnable ) {
         if (logEnable) log.info("Turning off Push Notifications")
         uri = "http://${ipAddress}/api.cgi?cmd=SetPush&token=${state.tokenKey}"
