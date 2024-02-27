@@ -35,3 +35,4 @@ Task Scheduler ~  Create Task
 <br>There are two actions, both need to be changed to start in the same location.
 <br>The task needs to start in the same folder that your Hubitat Driver reads.
 <br>The battery file will be called batteryreport.txt
+<br>With your network attached storage security, it may be easier to generate a shared link of the file to give Hubitat access to the file
