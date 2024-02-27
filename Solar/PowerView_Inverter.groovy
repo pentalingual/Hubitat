@@ -138,29 +138,33 @@ void queryData()  {
             float curr = ((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
             float amperesEst = curr.round(2)
             int battCharge = resp.getData().data.battPower
+            int homePower = resp.getData().data.loadOrEpsPower
             int gridPower = resp.getData().data.gridOrMeterPower
             if (resp.getData().data.toGrid) gridPower = -gridPower
             int battSOC = resp.getData().data.soc
-            def prevStatus = BatteryStatus
-            def prevSource = powerSource
+            def textSource = ""
             def newSource = ""
             
             if(grid) {
                 newSource = "mains"
+                textSource = "grid"
             } else {
                 if(solar) {
                     newSource = "dc"
+                    textSource = "solar"
                 } else {
                 if(battPower) {
                    newSource =  "battery"  
+                    textSource = "battery"  
                     } else { 
                        newSource = "unknown"
+                    textSource = "unknown"
                     }
                 }
             }
             
             String batStat = ""
-            if (amperesEst <0 ) {
+            if (amperesEst <-1 ) {
                 batStat = "Charging Battery from Grid"
             } else {
                 if ( battCharge < 0 ) { 
@@ -178,7 +182,7 @@ void queryData()  {
                 }
             }
                           
-            sendEvent(name: "power", value: resp.getData().data.loadOrEpsPower, unit: "W")
+            sendEvent(name: "power", value: homePower, unit: "W")
             sendEvent(name: "battery", value:  battSOC, unit: "%")         
             
             sendEvent(name: "powerSource", value: newSource)
@@ -192,14 +196,17 @@ void queryData()  {
             if (txtEnable) {
                 if (batStat == "Battery not in use") {
                     if(newSource && battCharge && gridPower) {
-                        log.info "Power Source is ${powerSource}, Load is drawing ${power} watts. Battery is at a ${battSOC}% charge."
+                        log.info "Power Source is ${textSource}, Load is drawing ${gridPower} watts. Battery is at a ${battSOC}% charge."
                     } else {
                         log.info "PowerView API is offline. We will try again in ${refreshSched} minutes."
                     }
                    } else { 
                     int AbsBatt = Math.abs(battCharge)
-                    log.info "${batStat} at a rate of ${AbsBatt} watts. Battery is at a ${battSOC}% charge."
-                
+                    if ( AbsBatt < 250) {
+                        log.info "Power Source is ${textSource}, Load is drawing ${homePower} watts. Battery is at a ${battSOC}% charge, operating at ${AbsBatt} watts."
+                    } else {
+                        log.info "${batStat} at a rate of ${AbsBatt} watts. Battery is at a ${battSOC}% charge."
+                    }
                 }
                 
             }
