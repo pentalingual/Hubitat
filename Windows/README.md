@@ -23,7 +23,7 @@ Task Scheduler ~  Create Task
 <br>        WMIC PATH Win32_Battery Get EstimatedChargeRemaining | Out-File -FilePath .\batteryreport.txt -Append
 <br>Location:
 <br>        *Select your desired shared network location that Hubitat can access*
-<br>        
+<br>
 <br><strong><i>Conditions</i></strong>
 <br>
 <br>Check wake the computer to run this task
