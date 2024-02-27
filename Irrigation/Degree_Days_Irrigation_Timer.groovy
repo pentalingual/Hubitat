@@ -265,7 +265,8 @@ section("Enter your estimated watering frequencies", hideable: true, hidden: sta
 
 
 def irrPrerun() {
-    todaysHigh = openMapsAPI.currentValue("forecastHigh")
+   if(atomicState.CDD < 0) atomicState.CDD = 0
+   todaysHigh = openMapsAPI.currentValue("forecastHigh")
    todaysRain = openMapsAPI.currentValue("rainToday")
    degreesToday = todaysHigh - degreeZero
     if(enableLog) log.debug "Report: we expect ${todaysRain} inches of rain today and a high of ${todaysHigh}. Cumulative degree days on record were ${atomicState.CDD}"
