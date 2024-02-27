@@ -55,7 +55,7 @@ def logsOff() {
 }
 
 def getToken() {
-    if (textEnable) log.info("Getting a new login token") 
+    if (logEnable) log.info("Getting a new login token") 
     body1 = '[{"cmd":"Login", "param":{ "User":{ "Version": "0", "userName":"' 
     body2 = '", "password":"'
     body3 = '"}}}]'
@@ -65,11 +65,10 @@ def getToken() {
          contentType: "application/json",
          body: "${body1}${Username}${body2}${Password}${body3}"
      ]
-        if (logEnable) log.debug(paramsTOK)    
+        
     httpPost(paramsTOK) {resp ->
         tokenResp = resp.getData()
         state.tokenKey = tokenResp.value.Token.name[0]
-        if (logEnable) log.debug(state.tokenKey) 
         state.attemptsNo = 1
     }
     if(CurrentStatus == "Turning On Notifications") on()
@@ -99,20 +98,20 @@ def getCurrentStatus() {
         if(logEnable) log.debug("Push notifications schedule: ${pushSched[0]}")
         if (pushSched.enable[0] ==1) {
             if(pushEnable) sendEvent(name: "switch", value: "on")
-            if(txtEnable) log.info("Reolink camera push notifications are on")
+            if(txtEnable || logEnable) log.info("Reolink camera push notifications are on")
             sendEvent(name: "CurrentStatus" , value: "Idle")
         } else {
             if (pushSched.enable[0] ==0) {
                 if(pushEnable) sendEvent(name: "switch", value: "off") 
-                if(txtEnable) log.info("Reolink camera push notifications are off")
+                if(txtEnable || logEnable) log.info("Reolink camera push notifications are off")
                 sendEvent(name: "CurrentStatus" , value:"Idle")
             } else {         
-                if (txtEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${state.attemptsNo} and token is ${state.tokenKey} "
+                if (logEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${state.attemptsNo} and token is ${state.tokenKey} "
                 if (state.attemptsNo == 0) { 
                     getToken() 
                 } else {
                     sendEvent(name: "CurrentStatus" , value: "Unable to login")
-                    if(txtEnable) log.info("There was an error accessing the device, check your credentials and ensure you haven't reached the maximum number of calls in a 30 min session.")
+                    log.error("There was an error accessing the device, check your credentials and ensure you haven't reached the maximum number of calls in a 30 min session.")
                 }
             }
         }
@@ -127,12 +126,12 @@ def getCurrentStatus() {
         if(logEnable) log.debug("Email notifications schedule: ${emailSched[0]}")
         if (emailSched.enable[0] ==1) {
             if(emailEnable) sendEvent(name: "switch", value: "on")
-            if(txtEnable) log.info("Reolink camera Email notifications are on")
+            if(txtEnable || logEnable) log.info("Reolink camera Email notifications are on")
             sendEvent(name: "CurrentStatus" , value: "Idle")
         } else { 
             if (emailSched.enable[0] ==0) {
                 if(emailEnable) sendEvent(name: "switch", value: "off") 
-                if(txtEnable) log.info("Reolink camera Email notifications are off")
+                if(txtEnable || logEnable) log.info("Reolink camera Email notifications are off")
                 sendEvent(name: "CurrentStatus" , value:"Idle")
             } else { 
         if (logEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${state.attemptsNo} and token is ${state.tokenKey} "
@@ -140,7 +139,7 @@ def getCurrentStatus() {
             getToken() 
             } else {
                     sendEvent(name: "CurrentStatus" , value: "Unable to login")
-                    if(txtEnable) log.info("There was an error accessing the device, check your credentials and ensure you haven't reached the maximum number of calls in a 30 min session.")
+                    log.error("There was an error accessing the device, check your credentials and ensure you haven't reached the maximum number of calls in a 30 min session.")
             state.Connection = ""
                 }
         }
@@ -151,7 +150,7 @@ def getCurrentStatus() {
         log.error exception
         state.Connection = ""
         sendEvent(name: "CurrentStatus" , value: "Unable to access Host")
-        if(txtEnable) log.info("There was an error accessing the device, check to make sure the IP address is valid, the device is online and on the Hubitat's network.")
+        log.error("There was an error accessing the device, check to make sure the IP address is valid, the device is online and on the Hubitat's network.")
     }
 }
 
