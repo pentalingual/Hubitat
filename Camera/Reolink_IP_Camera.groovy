@@ -48,12 +48,6 @@ metadata {
     }
 }
 
-
-def logsOff() {
-    log.warn "debug logging disabled..."
-    device.updateSetting("logEnable", [value: "false", type: "bool"])
-}
-
 def getToken() {
     if (logEnable) log.info("Getting a new login token") 
     body1 = '[{"cmd":"Login", "param":{ "User":{ "Version": "0", "userName":"' 
