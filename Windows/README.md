@@ -28,10 +28,10 @@ Task Scheduler ~  Create Task
 <br>
 <br>Check wake the computer to run this task
 <br>
-<br><strong><i>Additional Notes</i></strong>        
-<br>If you prefer to have a prebuilt sample task to import, <a href="https://github.com/pentalingual/Hubitat/blob/main/Windows/Task%20Post%20battery%20Script.xml">download the sample task</a> and use "Import Task" in Windows Task Scheduler. 
+<br><strong><i>Use the Prebuilt Task</i></strong>        
+<br>If you prefer to have a prebuilt sample task to import, <a href="https://github.com/pentalingual/Hubitat/blob/main/Windows/Task%20Post%20battery%20Script.xml">download the sample task</a> and use "Import Task" to import this file into Windows Task Scheduler. 
 <br><strong>IMPORTANT:You will need edit your desired "Start In" location if you use the prebuilt sample task</strong> 
-<br>You can change this after importing by clicking into edit EACH action and changing the Start In location.
+<br>You can change this while importing, by clicking into edit EACH action and changing the Start In location.
 <br>There are two actions, both need to be changed to start in the same location.
-<br>The battery file needs to start in the same location that your Hubitat Driver reads.
-<br>The battery file will be called '"batteryreport.txt"'
+<br>The task needs to start in the same folder that your Hubitat Driver reads.
+<br>The battery file will be called batteryreport.txt
