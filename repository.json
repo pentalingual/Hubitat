@@ -19,7 +19,7 @@
       "name": "Door Chime",
       "category": "Convenience",
       "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Chime/packageManifest.json",
-      "description": "Set up custom sounds to trigger when doors are opened, anytime, only during certain Modes, or based on HSM Status",
+      "description": "Set up custom sounds to trigger when doors are opened; anytime, only during certain Modes, or based on HSM Status",
       "tags": [
         "Doors & Windows",
         "Alarm Systems",
