@@ -51,12 +51,6 @@ metadata {
 }
 
 
-def logsOff() {
-    log.warn "debug logging disabled..."
-    device.updateSetting("logEnable", [value: "false", type: "bool"])
-}
-
-
 def initialize() {
      log.info "Initializing the PowerView service..."
      state.clear()
@@ -70,7 +64,6 @@ def initialize() {
 def updated() {
     log.info "Updated... refreshing every ${refreshSched} minutes. Debug logging is: ${logEnable}."
     schedule("0 0/${refreshSched} * * * ?", refresh)
-    
 }
 
 
@@ -90,14 +83,17 @@ void getToken() {
     //* Catch error and define. 443. 401, read timed out
     try {
         httpPostJson(paramsTOK, { resp -> 
+            if (logEnable) log.debug(resp.getData().data)
+            
             state.xTokenKeyx = resp.getData().data.access_token
             attemptsNo = 1
             runIn(10,queryData)
         })
     } catch (Exception) {
-     log.debug "unable to login. This could be due to an invalid username/password, or PowerView may be down."
+     log.error "unable to login. This could be due to an invalid username/password, or PowerView may be down."
     }
 }
+
 
 void getPlantDetails() {
     def key = "Bearer ${state.xTokenKeyx}"
@@ -109,6 +105,8 @@ void getPlantDetails() {
         ]
         
         httpGet(paramsInitial,  { resp ->
+            if (logEnable) log.debug(resp.getData().data)
+            
             def invLimit = resp.getData().data.infos.ratePower[0]
             state.SystemSize =  invLimit.toInteger()
             state.inverterSN = resp.getData().data.infos.sn[0]
@@ -131,6 +129,7 @@ void queryData()  {
     ]
     try {
         httpGet(paramsEnergy, { resp ->
+            if (logEnable) log.debug(resp.getData().data)
             
             boolean grid = resp.getData().data.gridOrMeterPower > 120
             boolean solar = resp.getData().data.pvPower > 120
@@ -198,7 +197,7 @@ void queryData()  {
                     if(newSource && battCharge && gridPower) {
                         log.info "Power Source is ${textSource}, Load is drawing ${gridPower} watts. Battery is at a ${battSOC}% charge."
                     } else {
-                        log.info "PowerView API is offline. We will try again in ${refreshSched} minutes."
+                        log.error "PowerView API is offline. We will try again in ${refreshSched} minutes."
                     }
                    } else { 
                     int AbsBatt = Math.abs(battCharge)
@@ -223,6 +222,7 @@ void queryData()  {
     }
 }
 
+
 void getAmperage() {
      def key = "Bearer ${state.xTokenKeyx}"
      def paramsAmps = [  
@@ -232,6 +232,7 @@ void getAmperage() {
     ]
     
         httpGet(paramsAmps, { resp ->
+            if (logEnable) log.debug(resp.getData().data)
             
             float valVac1 = 0
             def vac1 = resp.getData().data.vip[0]
