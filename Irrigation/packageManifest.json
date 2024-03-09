@@ -1,9 +1,9 @@
 {
   "packageName": "Degree Days Irrigation Timer",
   "author": "pentalingual",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minimumHEVersion": "0.0",
-  "dateReleased": "2024-02-10",
+  "dateReleased": "2024-03-09",
   "apps": [
     {
       "id": "903f1a8f-5359-4cbf-b770-0a1f82989dbb",
