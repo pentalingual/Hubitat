@@ -7,16 +7,17 @@
  *      Date          Source        Version     What
  *      ----          ------        -------     ----
  *      2024-02-09    pentalingual  0.1.0       Initialized Community Release
+ *      2024-03-09    pentalingual  0.1.1       Added decline rain usage option
  *
  */
 
-	public static String version()      {  return "0.1.0"  }
+	public static String version()      {  return "0.1.1"  }
 
 definition(
 	name: "Degree Days Irrigation Timer",
 	namespace: "pentalingual",
 	author: "Andrew Nunes",
-	description: "Irrigation scheduler based on cumulative hot degree days since last watering (or precipication)",
+	description: "Irrigation scheduler based on cumulative degree days since last watering or precipication",
 	category: "Utility",
     importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Degree_Days_Irrigation_Timer.groovy",
 	iconUrl: "",
@@ -277,7 +278,8 @@ def irrPrerun() {
     }
         tempCDD = atomicState.CDD + ddToday
     atomicState.CDD = tempCDD
-    if(useRain && todaysRain >0) {
+    rainBool = todaysRain >0
+    if(useRain && rainBool) {
         subRain = Math.round(degreeDays * todaysRain)
         maxRain = Math.min(subRain, tempCDD)
         log.info "Adding ${ddToday} degree days, but with ${todaysRain} inches of rain today and a cumulative ${tempCDD} degree days, we are also subtracting ${maxRain} from that CDD total."
