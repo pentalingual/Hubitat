@@ -7,7 +7,7 @@
  *      Date          Source        Version     What                                              URL
  *      ----          ------        -------     ----                                              ---
  *      2023-02-19    pentalingual  0.1.0       Starting version
- *      2024-02-01    pentalingual  0.2.0       Added Motion Sensing Capability
+ *      2024-02-01    pentalingual  0.2.0       Scoping Motion Sensing Capability
  */
 
 static String version() { return '0.1.0' }
