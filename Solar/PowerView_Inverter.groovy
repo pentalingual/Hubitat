@@ -63,6 +63,7 @@ def initialize() {
                   
 def updated() {
     log.info "Updated... refreshing every ${refreshSched} minutes. Debug logging is: ${logEnable}."
+    initialize()
     schedule("0 0/${refreshSched} * * * ?", refresh)
 }
 
