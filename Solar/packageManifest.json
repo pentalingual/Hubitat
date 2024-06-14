@@ -1,9 +1,9 @@
 {
   "packageName": "PowerView Inverter",
   "author": "Andrew Nunes",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "minimumHEVersion": "0.0",
-  "dateReleased": "2024-02-25",
+  "dateReleased": "2024-06-11",
   "drivers": [
     {
       "id": "e1947fb4-eab5-4b2a-a867-413f6ca89ffe",
