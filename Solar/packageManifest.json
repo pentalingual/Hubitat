@@ -9,7 +9,7 @@
       "id": "e1947fb4-eab5-4b2a-a867-413f6ca89ffe",
       "name": "SolArk Inverter",
       "namespace": "pentalingual",
-      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy",
+      "location": "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/SolArk_Inverter.groovy",
       "required": true
     }
   ]
