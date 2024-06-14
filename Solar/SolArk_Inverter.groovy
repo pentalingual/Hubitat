@@ -21,7 +21,7 @@ metadata {
             author: "Andrew Nunes",
             description: "Leverages the MySolArk API to update Hubitat with your SolArk inverter status",
             category: "Integrations",
-            importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
+            importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/SolArk_Inverter.groovy"
     )  {
         capability "Initialize"
         capability "Refresh"
