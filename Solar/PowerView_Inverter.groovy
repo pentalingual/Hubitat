@@ -1,5 +1,5 @@
 /*
- * PowerView Inverter
+ * SolArk Inverter
  *
  *
  *  Change History:
@@ -9,16 +9,17 @@
  *      2023-09-24    pentalingual  0.1.0       Starting version
  *      2024-01-02    pentalingual  0.2.0       Added Token Refresh
  *      2024-02-25    pentalingual  0.3.0       Added inverter Details & logging
+ *      2024-06-11    pentalingual  0.4.0       Switched to MySolArk
  */
 
-static String version() { return '0.3.0' }
+static String version() { return '0.4.0' }
 
 metadata {
     definition(
-            name: "PowerView Inverter",
+            name: "SolArk Inverter",
             namespace: "pentalingual",
             author: "Andrew Nunes",
-            description: "Leverages the PowerView API to update Hubitat with your SolArk or SunSynk inverter status",
+            description: "Leverages the MySolArk API to update Hubitat with your SolArk inverter status",
             category: "Integrations",
             importUrl: "https://raw.githubusercontent.com/pentalingual/Hubitat/main/Solar/PowerView_Inverter.groovy"
     )  {
@@ -38,21 +39,21 @@ metadata {
     }
 
     preferences {
-        input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with the PowerView portal to update Hubitat with your latest solar/battery inverter details.</strong></center>", type: "hidden"
+        input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with the MySolArk portal to update Hubitat with your latest solar/battery inverter details.</strong></center>", type: "hidden"
         input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID to associate with this driver, and provide the API your PowerView username and password</i></center>", type: "hidden"
-        input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://pv.inteless.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant.</center>",  type: "hidden"
+        input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://www.mysolark.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant.</center>",  type: "hidden"
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
         input name: "refreshSched", type: "int", title: "Refresh every how many minutes?", defaultValue: 15  
-        input name: "plantID", type: "string", title: "PowerView Plant ID", description: "<i><small>The Plant ID is at the end of the URL when you login and navigate to the desired plant https://pv.inteless.com/plants/overview/</i></small><strong>?????</strong>", defaultValue: null
-        input name: "Username", type: "string", title: "PowerView Username", defaultValue: null
-        input name: "Password", type: "password", title: "PowerView Password", hidden: true, defaultValue: null
+        input name: "plantID", type: "string", title: "MySolArk Plant ID", description: "<i><small>The Plant ID is at the end of the URL when you login and navigate to the desired plant https://www.mysolark.com/plants/overview/</i></small><strong>?????</strong>", defaultValue: null
+        input name: "Username", type: "string", title: "MySolArk Username", defaultValue: null
+        input name: "Password", type: "password", title: "MySolArk Password", hidden: true, defaultValue: null
     }
 }
 
 
 def initialize() {
-     log.info "Initializing the PowerView service..."
+     log.info "Initializing the MySolArk service..."
      state.clear()
      state.Amperage = "the AC output being inverted from DC Power Sources (grid/gen current is not inverted)"
      state.Power = "the total number of Watts being drawn by the load/home"
@@ -72,12 +73,12 @@ void getToken() {
     body1 = ['username':Username,'password':Password,'grant_type':'password','client_id':'csp-web','source':'elinter']
     def URIa = "https://openapi.inteless.com/v1/oauth/token"
     def URIb = "https://pv.inteless.com/api/v1/oauth/token"
-    def URIc = "https://pv.inteless.com/oauth/token"
+    def URIc = "https://www.solarkcloud.com/oauth/token"
     def paramsTOK = [
         uri: URIc,
         headers: [
-            'Origin': 'https://pv.inteless.com',
-            'Referer': 'https://pv.inteless.com/login'
+            'Origin': 'https://www.solarkcloud.com/',
+            'Referer': 'https://www.solarkcloud.com/login'
         ],
         body: body1
     ]
@@ -91,7 +92,7 @@ void getToken() {
             runIn(10,queryData)
         })
     } catch (Exception) {
-     log.error "unable to login. This could be due to an invalid username/password, or PowerView may be down."
+     log.error "unable to login. This could be due to an invalid username/password, or MySolArk may be down."
     }
 }
 
@@ -100,7 +101,7 @@ void getPlantDetails() {
     def key = "Bearer ${state.xTokenKeyx}"
     body5 = ['status': 1, 'type': -1, 'limit': 1, 'page': 1]
     def paramsInitial = [  
-        uri: "https://pv.inteless.com/api/v1/plant/${plantID}/inverters",
+        uri: "https://www.solarkcloud.com/api/v1/plant/${plantID}/inverters",
         headers: [ 'Authorization' : key], 
         query: body5
         ]
@@ -124,7 +125,7 @@ def refresh() {
 void queryData()  {
     def key = "Bearer ${state.xTokenKeyx}"
     def paramsEnergy = [  
-        uri: "https://pv.inteless.com/api/v1/plant/energy/${plantID}/flow",
+        uri: "https://www.solarkcloud.com/api/v1/plant/energy/${plantID}/flow",
         headers: [ 'Authorization' : key ],
         requestContentType: "application/x-www-form-urlencoded"
     ]
@@ -198,7 +199,7 @@ void queryData()  {
                     if(newSource && battCharge && gridPower) {
                         log.info "Power Source is ${textSource}, Load is drawing ${gridPower} watts. Battery is at a ${battSOC}% charge."
                     } else {
-                        log.error "PowerView API is offline. We will try again in ${refreshSched} minutes."
+                        log.error "MySolArk API is offline. We will try again in ${refreshSched} minutes."
                     }
                    } else { 
                     int AbsBatt = Math.abs(battCharge)
@@ -227,7 +228,7 @@ void queryData()  {
 void getAmperage() {
      def key = "Bearer ${state.xTokenKeyx}"
      def paramsAmps = [  
-        uri: "https://pv.inteless.com/api/v1/inverter/${state.inverterSN}/realtime/output",
+        uri: "https://www.solarkcloud.com/api/v1/inverter/${state.inverterSN}/realtime/output",
         headers: [ 'Authorization' : key ],
         requestContentType: "application/x-www-form-urlencoded"
     ]
@@ -270,3 +271,4 @@ void getAmperage() {
             sendEvent(name: "amperage", value: amperes, unit: "A")         
 }) 
 }
+
