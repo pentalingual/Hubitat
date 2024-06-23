@@ -182,7 +182,8 @@ void queryData()  {
                     }
                 }
             }
-                          
+           if ( homePower == 0 )   {          
+            } else {                
             sendEvent(name: "power", value: homePower, unit: "W")
             sendEvent(name: "battery", value:  battSOC, unit: "%")         
             
@@ -193,7 +194,7 @@ void queryData()  {
             sendEvent(name: "BatteryDraw", value: battCharge, unit: "W")
             sendEvent(name: "GeneratorDraw", value: resp.getData().data.genPower, unit: "W")
             sendEvent(name: "BatteryStatus", value: batStat)
-            
+           }
             if (txtEnable) {
                 if (batStat == "Battery not in use") {
                     if(newSource && battCharge && gridPower) {
