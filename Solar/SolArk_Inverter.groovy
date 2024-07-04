@@ -10,9 +10,10 @@
  *      2024-01-02    pentalingual  0.2.0       Added Token Refresh
  *      2024-02-25    pentalingual  0.3.0       Added inverter Details & logging
  *      2024-06-11    pentalingual  0.4.0       Switched to MySolArk
+ *      2024-07-04    pentalingual  0.4.2       Updated API Report Handling
  */
 
-static String version() { return '0.4.0' }
+static String version() { return '0.4.2' }
 
 metadata {
     definition(
@@ -139,6 +140,7 @@ void queryData()  {
             float curr = ((resp.getData().data.loadOrEpsPower - resp.getData().data.gridOrMeterPower)/ 120 )
             float amperesEst = curr.round(2)
             int battCharge = resp.getData().data.battPower
+            if (resp.getData().data.toBat) battCharge = battCharge* -1 
             int homePower = resp.getData().data.loadOrEpsPower
             int gridPower = resp.getData().data.gridOrMeterPower
             if (resp.getData().data.toGrid) gridPower = -gridPower
@@ -182,8 +184,8 @@ void queryData()  {
                     }
                 }
             }
-           if ( homePower == 0 )   {          
-            } else {                
+            if ( homePower == 0 )   {          
+            } else {
             sendEvent(name: "power", value: homePower, unit: "W")
             sendEvent(name: "battery", value:  battSOC, unit: "%")         
             
@@ -194,7 +196,8 @@ void queryData()  {
             sendEvent(name: "BatteryDraw", value: battCharge, unit: "W")
             sendEvent(name: "GeneratorDraw", value: resp.getData().data.genPower, unit: "W")
             sendEvent(name: "BatteryStatus", value: batStat)
-           }
+            }
+            
             if (txtEnable) {
                 if (batStat == "Battery not in use") {
                     if(newSource && battCharge && gridPower) {
@@ -236,7 +239,7 @@ void getAmperage() {
     
         httpGet(paramsAmps, { resp ->
             if (logEnable) log.debug(resp.getData().data)
-            
+            try {
             float valVac1 = 0
             def vac1 = resp.getData().data.vip[0]
             if( vac1 ) {
@@ -270,6 +273,6 @@ void getAmperage() {
             int invOutput = (amperes*66.66)/invLimit
             if ( amperes>invLimit ) log.warn("Inverter pushing ${amperes} amps, ${invOutput}% of the inverter limit.")
             sendEvent(name: "amperage", value: amperes, unit: "A")         
-}) 
+            } catch(exception) { }}) 
 }
 
