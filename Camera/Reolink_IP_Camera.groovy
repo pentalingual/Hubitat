@@ -8,9 +8,10 @@
  *      ----          ------        -------     ----
  *      2023-02-19    pentalingual  0.1.0       Starting version
  *      2024-02-20    pentalingual  0.2.0       Added improved connection management
+ *	2024-08-27    pentalingual  0.3.0       Fixed glitch when token expired and turning on/off
  */
 
-static String version() { return '0.2.0' }
+static String version() { return '0.3.0' }
 
 metadata {
     definition(
