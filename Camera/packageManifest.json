@@ -1,9 +1,9 @@
 {
   "packageName": "Reolink IP Camera",
   "author": "Andrew Nunes",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "minimumHEVersion": "0.0",
-  "dateReleased": "2024-02-20",
+  "dateReleased": "2024-08-27",
   "drivers": [
     {
       "id": "82739d11-7c2e-4898-853c-c109a4b63664",
