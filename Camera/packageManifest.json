@@ -4,6 +4,7 @@
   "version": "0.3.0",
   "minimumHEVersion": "0.0",
   "dateReleased": "2024-08-27",
+  "releaseNotes": "2024-08-27 Fixed glitch when token expired and turning on/off",
   "drivers": [
     {
       "id": "82739d11-7c2e-4898-853c-c109a4b63664",
