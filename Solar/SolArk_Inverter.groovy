@@ -46,7 +46,7 @@ metadata {
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
         input name: "refreshSched", type: "int", title: "Refresh every how many minutes?", defaultValue: 15  
-        input name: "plantID", type: "string", title: "MySolArk Plant ID", description: "<i><small>The Plant ID is at the end of the URL when you login and navigate to the desired plant https://www.mysolark.com/plants/overview/</i></small><strong>?????</strong>", defaultValue: null
+        input name: "plantID", type: "string", title: "MySolArk Plant ID", description: "<i><small>The Plant ID is at the end of the URL when you login and navigate to the desired plant https://www.mysolark.com/plants/overview/</i></small><strong>?????</strong>/2", defaultValue: null
         input name: "Username", type: "string", title: "MySolArk Username", defaultValue: null
         input name: "Password", type: "password", title: "MySolArk Password", hidden: true, defaultValue: null
     }
