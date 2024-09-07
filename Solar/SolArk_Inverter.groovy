@@ -11,9 +11,10 @@
  *      2024-02-25    pentalingual  0.3.0       Added inverter Details & logging
  *      2024-06-11    pentalingual  0.4.0       Switched to MySolArk
  *      2024-07-04    pentalingual  0.4.2       Updated API Report Handling
+ *      2024-09-07    pentalingual  0.4.3       Updated link descriptions
  */
 
-static String version() { return '0.4.2' }
+static String version() { return '0.4.3' }
 
 metadata {
     definition(
@@ -41,12 +42,12 @@ metadata {
 
     preferences {
         input name: "Blank0",  title: "<center><strong>This driver will maintain an API connection with the MySolArk portal to update Hubitat with your latest solar/battery inverter details.</strong></center>", type: "hidden"
-        input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID to associate with this driver, and provide the API your PowerView username and password</i></center>", type: "hidden"
+        input name: "Instructions", title: "<center>**********<br><i>To make it work, you'll need to figure out your plant ID to associate with this driver, and provide the API your MySolArk username and password</i></center>", type: "hidden"
         input name: "Blank1",  title: "<center>**********<br>The Plant ID is at the end of the URL when you navigate to the <a href='https://www.mysolark.com/plants/' target='_blank'>Plant Overview</a> page and click into your desired power plant.</center>",  type: "hidden"
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: false
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
         input name: "refreshSched", type: "int", title: "Refresh every how many minutes?", defaultValue: 15  
-        input name: "plantID", type: "string", title: "MySolArk Plant ID", description: "<i><small>The Plant ID is at the end of the URL when you login and navigate to the desired plant https://www.mysolark.com/plants/overview/</i></small><strong>?????</strong>/2", defaultValue: null
+        input name: "plantID", type: "string", title: "MySolArk Plant ID", description: "<i><small>The Plant ID is at the end of the URL right before the '/2' when you login and navigate to the desired plant https://www.mysolark.com/plants/overview/</i></small><strong>?????</strong><i><small>/2</i></small>", defaultValue: null
         input name: "Username", type: "string", title: "MySolArk Username", defaultValue: null
         input name: "Password", type: "password", title: "MySolArk Password", hidden: true, defaultValue: null
     }
