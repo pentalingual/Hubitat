@@ -1,10 +1,10 @@
 {
   "packageName": "Reolink IP Camera",
   "author": "Andrew Nunes",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "minimumHEVersion": "0.0",
-  "dateReleased": "2024-08-27",
-  "releaseNotes": "Version [0.3.0] - 2024-08-27\n  - Fixed glitch when token expired and turning notifications on/off",
+  "dateReleased": "2024-09-7",
+  "releaseNotes": "Version [0.3.1] - 2024-09-7\n  - Fixed glitch when token expired and turning notifications on/off",
   "drivers": [
     {
       "id": "82739d11-7c2e-4898-853c-c109a4b63664",
