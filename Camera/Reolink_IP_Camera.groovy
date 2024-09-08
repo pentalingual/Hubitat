@@ -8,10 +8,10 @@
  *      ----          ------        -------     ----
  *      2023-02-19    pentalingual  0.1.0       Starting version
  *      2024-02-20    pentalingual  0.2.0       Added improved connection management
- *	2024-08-27    pentalingual  0.3.0       Fixed glitch when token expired and turning on/off
+ *	2024-09-7    pentalingual  0.3.1       Fixed glitch when token expired and turning on/off
  */
 
-static String version() { return '0.3.0' }
+static String version() { return '0.3.1' }
 
 metadata {
     definition(
@@ -66,9 +66,9 @@ def getToken() {
         state.tokenKey = tokenResp.value.Token.name[0]
         state.attemptsNo = 1
     }
-    if(CurrentStatus == "Turning On Notifications") on()
-    if(CurrentStatus == "Turning Off Notifications") off()
-    if(CurrentStatus == "Refreshing...") getCurrentStatus()
+    if(state.statusIs  == "Turning On Notifications") on()
+    if(state.statusIs  == "Turning Off Notifications") off()
+    if(state.statusIs  == "Refreshing...") getCurrentStatus()
     sendEvent(name: "loginURL", value: "<html><a href='http://${ipAddress}/?token=${state.tokenKey}' target='_blank' and rel='noopener noreferrer'>Click to view Feed</a></html>")
     state.Connection = "Valid"
 }
@@ -76,6 +76,7 @@ def getToken() {
 
 def refresh() {
     sendEvent(name: "CurrentStatus" , value: "Refreshing...")
+    state.statusIs = "Refreshing..."
     state.attemptsNo = 0  
     getCurrentStatus()
 }
@@ -95,17 +96,20 @@ def getCurrentStatus() {
             if(pushEnable) sendEvent(name: "switch", value: "on")
             if(txtEnable || logEnable) log.info("Reolink camera push notifications are on")
             sendEvent(name: "CurrentStatus" , value: "Idle")
+            state.statusIs = "Idle"
         } else {
             if (pushSched.enable[0] ==0) {
                 if(pushEnable) sendEvent(name: "switch", value: "off") 
                 if(txtEnable || logEnable) log.info("Reolink camera push notifications are off")
                 sendEvent(name: "CurrentStatus" , value:"Idle")
+                state.statusIs = "Idle"
             } else {         
                 if (logEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${state.attemptsNo} and token is ${state.tokenKey} "
                 if (state.attemptsNo == 0) { 
                     getToken() 
                 } else {
                     sendEvent(name: "CurrentStatus" , value: "Unable to login")
+                    state.statusIs = "Idle"
                     log.error("There was an error accessing the device, check your credentials and ensure you haven't reached the maximum number of calls in a 30 min session.")
                 }
             }
@@ -123,17 +127,20 @@ def getCurrentStatus() {
             if(emailEnable) sendEvent(name: "switch", value: "on")
             if(txtEnable || logEnable) log.info("Reolink camera Email notifications are on")
             sendEvent(name: "CurrentStatus" , value: "Idle")
+            state.statusIs = "Idle"
         } else { 
             if (emailSched.enable[0] ==0) {
                 if(emailEnable) sendEvent(name: "switch", value: "off") 
                 if(txtEnable || logEnable) log.info("Reolink camera Email notifications are off")
                 sendEvent(name: "CurrentStatus" , value:"Idle")
+                state.statusIs = "Idle"
             } else { 
         if (logEnable) log.error "token may have expired, trying to get a new one; number of attempts is ${state.attemptsNo} and token is ${state.tokenKey} "
         if (state.attemptsNo == 0) { 
             getToken() 
             } else {
                     sendEvent(name: "CurrentStatus" , value: "Unable to login")
+            state.statusIs = "Idle"
                     log.error("There was an error accessing the device, check your credentials and ensure you haven't reached the maximum number of calls in a 30 min session.")
             state.Connection = ""
                 }
@@ -145,6 +152,7 @@ def getCurrentStatus() {
         log.error exception
         state.Connection = ""
         sendEvent(name: "CurrentStatus" , value: "Unable to access Host")
+        state.statusIs = "Idle"
         log.error("There was an error accessing the device, check to make sure the IP address is valid, the device is online and on the Hubitat's network.")
     }
 }
@@ -159,6 +167,7 @@ def updated() {
 
 def on() {
     sendEvent(name: "CurrentStatus" , value: "Turning On Notifications")
+    state.statusIs = "Turning On Notifications"
     state.attemptsNo = 0  
     if ( pushEnable ) {
         if (logEnable) log.info("Turning on Push Notifications")
@@ -191,6 +200,7 @@ def on() {
 
 def off() {
     sendEvent(name: "CurrentStatus" , value: "Turning Off Notifications")
+    state.statusIs = "Turning Off Notifications"
     state.attemptsNo = 0  
     if ( pushEnable ) {
         if (logEnable) log.info("Turning off Push Notifications")
