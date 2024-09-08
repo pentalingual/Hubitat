@@ -11,7 +11,7 @@
  *      2024-02-25    pentalingual  0.3.0       Added inverter Details & logging
  *      2024-06-11    pentalingual  0.4.0       Switched to MySolArk
  *      2024-07-04    pentalingual  0.4.2       Updated API Report Handling
- *      2024-09-07    pentalingual  0.4.3       Updated link descriptions
+ *      2024-09-07    pentalingual  0.4.3       Updated link descriptions and improved error logging
  */
 
 static String version() { return '0.4.3' }
@@ -107,7 +107,7 @@ void getPlantDetails() {
         headers: [ 'Authorization' : key], 
         query: body5
         ]
-        
+       try { 
         httpGet(paramsInitial,  { resp ->
             if (logEnable) log.debug(resp.getData().data)
             
@@ -116,7 +116,13 @@ void getPlantDetails() {
             state.inverterSN = resp.getData().data.infos.sn[0]
         })
 }
-
+    
+     catch (exception) {
+        log.error exception
+        log.debug("unable to return the inverter for this plant you may need to check that the plant id ${plantID} is correct")
+        return null
+    }
+}
 
 def refresh() {
     attemptsNo = 0
