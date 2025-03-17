@@ -12,7 +12,7 @@
  *      2024-06-11    pentalingual  0.4.0       Switched to MySolArk
  *      2024-07-04    pentalingual  0.4.2       Updated API Report Handling
  *      2024-09-07    pentalingual  0.4.3       Updated link descriptions and improved error logging
- *		2025-03-16    pentalingual  0.4.5       Compliance with updated SolArk API
+ *      2025-03-16    pentalingual  0.4.5       Compliance with updated SolArk API
  */
 
 static String version() { return '0.4.5' }
