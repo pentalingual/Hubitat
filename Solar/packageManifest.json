@@ -1,10 +1,10 @@
 {
   "packageName": "SolArk Inverter",
   "author": "Andrew Nunes",
-  "version": "0.4.3",
+  "version": "0.4.5",
   "minimumHEVersion": "0.0",
-  "dateReleased": "2024-09-07",
-  "releaseNotes": "Version [0.4.3] - 2024-09-07\n  - Updated link descriptions and improved error logging",
+  "dateReleased": "2025-03-16",
+  "releaseNotes": "Version [0.4.5] - 2025-03-16\n  - Compliance with updated SolArk API",
   "drivers": [
     {
       "id": "e1947fb4-eab5-4b2a-a867-413f6ca89ffe",
